@@ -81,7 +81,9 @@ If you edit any other .jade file with NO prefix
 will update only appropriate .html file.
 */
 function isPartial(file) {
-  return path.basename(file).match(/^_.*/);
+	return path.basename(file).match(/^_.*/) ||
+		path.dirname(file) === 'dev/templates/components' ||
+		path.dirname(file) === 'dev/templates/components/Sections';
 }
 function findAffectedFiles(changedFile) {
   return new PugInheritance(changedFile, 'dev/templates', {basedir: 'dev/templates'})
