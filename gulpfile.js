@@ -12,7 +12,7 @@ const browserSync = require('browser-sync').create();
 const notify = require('gulp-notify');
 const cssnano = require('gulp-cssnano');
 const sass = require('gulp-sass');
-const jade = require('gulp-jade');
+const jade = require('gulp-pug');
 const autoprefixer = require('autoprefixer');
 const plumber = require('gulp-plumber');
 const rename = require('gulp-rename');
@@ -20,7 +20,7 @@ const concat = require('gulp-concat');
 const uglify = require('gulp-uglify');
 const spritesmith = require('gulp.spritesmith');
 const merge = require('merge-stream');
-const JadeInheritance = require('jade-inheritance');
+const PugInheritance = require('pug-inheritance');
 const changed = require('gulp-changed');
 const gcmq = require('gulp-group-css-media-queries');
 
@@ -84,7 +84,7 @@ function isPartial(file) {
   return path.basename(file).match(/^_.*/);
 }
 function findAffectedFiles(changedFile) {
-  return new JadeInheritance(changedFile, 'dev/templates', {basedir: 'dev/templates'})
+  return new PugInheritance(changedFile, 'dev/templates', {basedir: 'dev/templates'})
     .files
     .filter(function(file) { return !isPartial(file); })
     .map(function(file) { return 'dev/templates/' + file; })
@@ -103,7 +103,7 @@ function compileJade(files) {
     }));
 }
 gulp.task('jade', function() {
-  return compileJade('dev/templates/**/!(_)*.jade');
+  return compileJade('dev/templates/**/!(_)*.pug');
 });
 
 
@@ -247,7 +247,7 @@ gulp.task('watch', function() {
 	gulp.watch('dev/img/sprites/*.{png,jpg}', gulp.series('sprites'));
 	gulp.watch(['dev/img/**/*', '!dev/img/{sprites,sprites/**}'], gulp.series('images'));
 	gulp.watch('dev/fonts/**/*.{ttf,woff,eot,svg,otf}', gulp.series('fonts'));
-	gulp.watch('dev/templates/**/*.jade').on('change', function(changedFile) {
+	gulp.watch('dev/templates/**/*.pug').on('change', function(changedFile) {
     	return compileJade(isPartial(changedFile) ? findAffectedFiles(changedFile) : changedFile);
   	});
   	/* comment watch above and uncomment watch below if you don't want Jade to HTML compile
